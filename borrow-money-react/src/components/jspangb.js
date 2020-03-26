@@ -1,6 +1,9 @@
 import React from 'react';
 class jspangb extends React.Component {
-    state = {  }
+    constructor(props) {
+        super(props);
+        this.state={ }
+    }
     render() { 
         return (  
             <div> 页面 2</div>

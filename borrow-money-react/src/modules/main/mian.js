@@ -8,6 +8,7 @@ class Main extends React.Component {
         super(props);
         this.state={ }
         console.log(store.getState())
+        console.log(this.props.location.state)
          var  action = {
             type:'editinputValue',
             index:'1'

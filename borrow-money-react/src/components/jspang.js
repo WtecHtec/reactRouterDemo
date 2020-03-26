@@ -16,6 +16,7 @@ class jspang extends React.Component {
     handleClick = ()=>{
         console.log('撩拨了小姐姐')
         this.props.history.push('/main/Page2');
+
     }
 }
  

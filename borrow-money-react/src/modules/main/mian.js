@@ -1,4 +1,5 @@
 import React from 'react';
+import store from '../../store'
 import {NavLink,withRouter} from 'react-router-dom';
 // import Page1 from '../../components/jspang';
 // import Page2 from '../../components/jspangb';
@@ -6,6 +7,13 @@ class Main extends React.Component {
     constructor(props) {
         super(props);
         this.state={ }
+        console.log(store.getState())
+         var  action = {
+            type:'editinputValue',
+            index:'1'
+        }
+        store.dispatch(action)
+
     }
     render() { 
         return ( 

@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import md5 from 'js-md5'
+React.Component.prototype.$md5 = md5
 
 ReactDOM.render(
   <React.StrictMode>

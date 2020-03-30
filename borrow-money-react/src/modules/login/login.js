@@ -3,6 +3,7 @@ import './login.css';
 import { Modal,Button,List, InputItem, WhiteSpace } from 'antd-mobile';
 import { createForm  } from 'rc-form';
 // import {  handApiLogin } from './api'
+import Register from './register'
 class Login extends React.Component {
 
     constructor(props) {
@@ -14,11 +15,7 @@ class Login extends React.Component {
             timer: null
         }
     }
-    componentWillUnmount (){
-        if(this.state.timer) {
-            clearInterval(this.state.timer)
-        }
-    }
+
     render() {
         const { getFieldProps ,getFieldError } = this.props.form;
         let emailRules = [
@@ -38,10 +35,10 @@ class Login extends React.Component {
                 }
             }
         ]
-        let verifyBtn = <Button type="ghost" size="small" inline onClick={this.hendleVerifyBut.bind()}>验证</Button>
-        if (this.state.verifyStatus) {
-            verifyBtn = <label className={'error-lable'}> { this.state.secondTime} </label>
-        }
+        // let verifyBtn = <Button type="ghost" size="small" inline onClick={this.hendleVerifyBut.bind()}>验证</Button>
+        // if (this.state.verifyStatus) {
+        //     verifyBtn = <label className={'error-lable'}> { this.state.secondTime} </label>
+        // }
         return (
 
             <div className={'login'}>
@@ -49,7 +46,7 @@ class Login extends React.Component {
                 <List >
                     <InputItem {...getFieldProps('loginParam[email]', {
                         rules: emailRules,
-                    })} clear={true} placeholder="邮箱"/>
+                    })} clear={true} placeholder="邮箱" style={{ height:50}}/>
                 </List>
                   <label className={'error-lable'}> { (  getFieldError('loginParam[email]')) ? getFieldError('loginParam[email]').join(',') :  '' }  </label>
                 <WhiteSpace/>
@@ -80,40 +77,20 @@ class Login extends React.Component {
                         ]}
                 >
                     <div >
-                        <WhiteSpace/>
-                        <List >
-                            <InputItem clear={true} placeholder="邮箱" {...getFieldProps('regedit[email]', {
-                                rules: emailRules,
-                            })}/>
-                        </List>
-                        <label className={'error-lable'}> { (  getFieldError('regedit[email]')) ? getFieldError('regedit[email]').join(',') :  '' }  </label>
-                        <WhiteSpace/>
-
-                        <List.Item
-                            extra={  verifyBtn }
-                            multipleLine
-                        >
-                            <InputItem clear={true} placeholder="邮箱验证码"  {...getFieldProps('regedit[code]', {
-                                rules: [
-                                    { required: true, message: '*验证码不能为空' }],
-                            })} />
-                        </List.Item>
-                        <label className={'error-lable'}> { (  getFieldError('regedit[code]')) ? getFieldError('regedit[code]').join(',') :  '' }  </label>
-                        <WhiteSpace/>
-                        <List >
-                            <InputItem clear={true} placeholder="密码"
-                                       {...getFieldProps('regedit[pwd]', {
-                                           rules: [
-                                               { required: true, message: '*密码不能为空' }],
-                                       })} />
-                        </List>
-                        <label className={'error-lable'}> { (  getFieldError('regedit[pwd]')) ? getFieldError('regedit[pwd]').join(',') :  '' }  </label>
-                        <WhiteSpace/>
+                        <Register onRef={(ref)=>{ this.register = ref}} ></Register>
                     </div>
                 </Modal>
 
             </div>
         );
+    }
+
+    // 加载完毕
+    componentDidMount(){
+        this.props.history.listen(route => {
+            console.log(route)
+        })
+
     }
 
 
@@ -131,9 +108,9 @@ class Login extends React.Component {
             [key]: false,
         });
         this.props.form.resetFields()
-        if(this.state.timer) {
-            clearInterval(this.state.timer)
-            this.setState({verifyStatus: false})
+        // 关闭注册组件的定时器
+        if(this.register.state.timer) {
+            clearInterval(this.register.state.timer)
         }
     }
     //登陆
@@ -141,12 +118,13 @@ class Login extends React.Component {
 
         // let pwd = this.$md5(loginParam.pwd)
         this.props.form.validateFields((error, value) => {
-            console.log(' console.log(error); ',error);
+            // console.log(' console.log(error); ',error);
             let fieldsValue = this.props.form.getFieldsValue()
-            let loginParam = fieldsValue.loginParam
-            if (!error['loginParam']) {
+            let loginParam = fieldsValue['loginParam']
+            // console.log( fieldsValue['loginParam'])
+            if (!error) {
                 console.log(loginParam);
-                this.props.history.push(  {pathname:"/main",state : { name : '登陆成功' }})
+                this.props.history.push(  {pathname:"/main/account",state : { name : '登陆成功' }})
             }
 
         });
@@ -157,35 +135,19 @@ class Login extends React.Component {
 
     // 确定注册
     handleRegedit = key => ()=>{
-        let param = this.props.form.getFieldsValue()
-        console.log( param.loginParam)
-
-        this.props.form.validateFields((error, value) => {
+        console.log('handleRegedit',  this.register)
+        let param =  this.register.props.form.getFieldsValue()
+        console.log( param)
+        this.register.props.form.validateFields((error, value) => {
             console.log(error, value);
-            if (!error['regedit']) {
-                this.closeModal(key)()
+            if(!error) {
+                this.closeModal('modalStatus')()
             }
-
-        });
-    }
-
-    // 验证按钮
-    hendleVerifyBut = ()=>{
-        console.log('hendleVerifyBut 发送')
-        this.setState({
-            verifyStatus: true,
-            secondTime:60
         })
-         let timer = setInterval((e)=>{
-            this.setState({secondTime: this.state.secondTime - 1})
-             if (this.state.secondTime === 0) {
-                 clearInterval(this.state.timer)
-                 this.setState({verifyStatus: false})
-             }
-        },1000)
-        this.setState({timer: timer})
 
     }
+
+
 
 }
 ;

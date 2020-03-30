@@ -1,0 +1,41 @@
+.header {
+    position: fixed;
+    width: 100%;
+    top: 0px;
+}
+
+.accountContext {
+    height: calc(100% - 90px);
+    width: 100%;
+    /* margin-top: 45px;
+    padding-top: 45px; */
+}
+
+#account .am-list-body {
+    border: 0px solid #dddddd;
+}
+#account .am-list-line {
+    border: 0px solid #dddddd !important;
+}
+
+
+
+.sticky-list .sticky {
+    color: #9b59b6;
+    top: 89px !important;
+    text-align: center;
+    height: 45px;
+    line-height: 45px;
+}
+
+.sticky-list .am-list-item {
+    padding-left: 0px;
+}
+
+.sticky-list .am-list-line {
+    padding-right: 0px;
+}
+
+.sticky-list .am-list-content {
+    padding-top: 0px !important;
+}

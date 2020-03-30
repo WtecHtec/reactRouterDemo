@@ -1,0 +1,47 @@
+.header {
+    position: fixed;
+    width: 100%;
+    top: 0px;
+    display: none;
+}
+
+.mineContext {
+    height: 100%;
+    width: 100%;
+    /* margin-top: 45px; */
+}
+
+.countShow {
+    background: rgb(197, 193, 188);
+    height: 35%;
+    /* width: 100%; */
+    position: relative;
+    padding: 20px;
+    background: url("../../assets/countshow.JPG") center center /  100%  100% no-repeat;
+}
+
+.countNumber {
+    position: absolute;
+    bottom: 1rem;
+    font-size: 2.0rem;
+    color: #fff;
+    font-weight: 400;
+}
+
+.countDate {
+    position: absolute;
+    bottom: 3.5rem;
+    font-weight: 400;
+}
+
+.countDateVal {
+    font-size: 1.5rem;
+    color: #FFA54F;
+    font-weight: 300;
+}
+
+.countDateUnit {
+    font-weight: 500;
+    margin: 5px;
+    color: #ffff;
+}

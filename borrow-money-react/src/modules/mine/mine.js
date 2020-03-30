@@ -34,9 +34,10 @@ class Mine extends React.Component {
                                         background: `url(${require('../../assets/statistics.png')}) center center /  21px 21px no-repeat`
                                     }}></div>
                                 }
-                                onClick={() => {}}
+                                onClick={() => {  this.props.history.push('/dataBoard')}}
                                 arrow="horizontal"
                             >
+
                                 图表统计
                             </Item>
                             {/*<Item*/}

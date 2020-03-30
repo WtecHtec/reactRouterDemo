@@ -148,7 +148,10 @@ class Account extends React.Component {
         }
         }, 600);
       };
-
+   handleDetailView= (itemData)=>{
+       console.log(itemData)
+       this.props.history.push(  {pathname:"/detailView",state : { recordData : itemData }})
+   }
     componentWillUnmount(){
         if (this.state.listTimer) {
             clearTimeout(this.state.listTimer)
@@ -174,7 +177,7 @@ class Account extends React.Component {
                 <div key={itemData['id']} style={{ padding: '0 15px' }} >
                     {/* 每条内容 - {itemData['borrowDate']} - {sectionID} - {rowID} */}
                     <List>
-                        <Item  onClick={() => {}} extra={ <span style={{color:'red'}}> {itemData['moneyNum'] }</span> } align="top"
+                        <Item  onClick={() => { this.handleDetailView(itemData) }} extra={ <span style={{color:'red'}}> {itemData['moneyNum'] }</span> } align="top"
                               thumb="https://zos.alipayobjects.com/rmsportal/dNuvNrtqUztHCwM.png"
                               multipleLine>
                             {itemData['name']}
@@ -207,6 +210,7 @@ class Account extends React.Component {
                             height: '22px',
                             background: `url(${require('../../assets/add.png')}) center center /  21px 21px no-repeat`
                         }}
+                             onClick={()=>{  this.props.history.push('/addView')}}
                         />,
                        
                     ]}>账户</NavBar>

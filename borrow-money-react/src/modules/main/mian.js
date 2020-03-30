@@ -13,13 +13,26 @@ class Main extends React.Component {
             selectedTab: 'account'
         }
         // console.log(store.getState())
-        console.log(this.props)
-        var action = {
-            type: 'editinputValue',
-            index: '1'
-        }
-        store.dispatch(action)
+        // console.log(this.props)
+        // var action = {
+        //     type: 'editinputValue',
+        //     index: '1'
+        // }
+        // store.dispatch(action)
 
+    }
+
+    componentDidMount() {
+        if (this.props.location.pathname) {
+            let tabs = this.props.location.pathname.split('/main/')
+            if (tabs.length > 0) {
+                console.log(this.props.location.pathname,tabs)
+                this.setState({
+                    selectedTab: tabs[1],
+                });
+            }
+
+        }
     }
 
     render() {

@@ -1,5 +1,5 @@
 import React from 'react';
-var echarts = require('echarts');
+import echarts from './echarts'
 class PieEchart extends React.Component {
     constructor(props) {
         super(props);
@@ -59,7 +59,7 @@ class PieEchart extends React.Component {
                 selectedMode:false,
                 formatter: function(name) {
                     var total = 0; //各科正确率总和
-                    var averagePercent; //综合正确率
+                    // var averagePercent; //综合正确率
                     echartData.forEach(function(value, index, array) {
                         total += value.value;
                     });

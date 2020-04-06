@@ -40,6 +40,15 @@ class register extends React.Component {
         }
         return (
             <div>
+                    <WhiteSpace/>
+            <List>
+                    <InputItem className={'code'} clear={true} placeholder="真实姓名"  {...getFieldProps('regedit[name]', {
+                        rules: [
+                            { required: true, message: '*真实姓名不能为空' }],
+                    })} />
+                </List>
+                <label className={'error-lable'}> { (  getFieldError('regedit[name]')) ? getFieldError('regedit[name]').join(',') :  '' }  </label>
+            
                 <WhiteSpace/>
                 <List >
                     <InputItem clear={true} placeholder="邮箱" {...getFieldProps('regedit[email]', {
@@ -61,7 +70,7 @@ class register extends React.Component {
                 <label className={'error-lable'}> { (  getFieldError('regedit[code]')) ? getFieldError('regedit[code]').join(',') :  '' }  </label>
                 <WhiteSpace/>
                 <List >
-                    <InputItem clear={true} placeholder="密码"
+                    <InputItem type={'password'} clear={true} placeholder="密码"
                                {...getFieldProps('regedit[pwd]', {
                                    rules: [
                                        { required: true, message: '*密码不能为空' }],
@@ -82,9 +91,10 @@ class register extends React.Component {
         })
         let timer = setInterval((e)=>{
             this.setState({secondTime: this.state.secondTime - 1})
-            if (this.state.secondTime === 0) {
+            if (this.state.secondTime === 45) {
+                this.setState({secondTime: '1688'})
                 clearInterval(this.state.timer)
-                this.setState({verifyStatus: false})
+                // this.setState({verifyStatus: false})
             }
             console.log('asd')
         },1000)

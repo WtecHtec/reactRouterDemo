@@ -19,7 +19,7 @@ class RouterConfig extends React.Component{
         return(
             <Switch>
                 <Route path='/' exact render={()=>(
-                    <Redirect to='/detailView'/>
+                    <Redirect to='/login'/>
                 )}/>
                 <Route path="/main" render={() =>
                     <Main>

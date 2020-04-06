@@ -1,0 +1,7 @@
+
+  //如果同时引用了antd-mobile跟antd需要改成：
+{
+    "plugins": [
+      ["import", [{ "libraryName": "antd-mobile", "style": "css" },{ "libraryName": "antd", "style": "css" }]] // `style: true` 会加载 less 文件
+    ]
+  }

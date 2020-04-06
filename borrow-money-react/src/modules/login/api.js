@@ -7,3 +7,12 @@ export function handApiLogin (data) {
         data
     })
 }
+
+
+export function handApiRegister (data) {
+    return httpRequest({
+        url: '/registered',
+        method: 'post',
+        data
+    })
+}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { List, TextareaItem,Button, InputItem, WhiteSpace,NavBar, Icon } from 'antd-mobile';
 import { createForm } from 'rc-form';
-import Share from 'social-share-react'
+// import Share from 'social-share-react'
 import copy from 'copy-to-clipboard';
 class addview extends React.Component {
 

@@ -1,8 +1,8 @@
 import React from 'react';
 import './login.css';
-import { Modal,Button,List, InputItem, WhiteSpace } from 'antd-mobile';
+import { Modal,Button,List, InputItem, WhiteSpace,Toast } from 'antd-mobile';
 import { createForm  } from 'rc-form';
-// import {  handApiLogin } from './api'
+import {  handApiLogin ,handApiRegister} from './api'
 import Register from './register'
 class Login extends React.Component {
 
@@ -124,7 +124,22 @@ class Login extends React.Component {
             // console.log( fieldsValue['loginParam'])
             if (!error) {
                 console.log(loginParam);
-                this.props.history.push(  {pathname:"/main/account",state : { name : '登陆成功' }})
+                let param = {
+                    useremail: loginParam.email,
+                    pwd:   this.$md5(loginParam.pwd)
+                }
+                handApiLogin(param).then((res)=>{
+                     let data = res.data
+                     if(data.statusCode === 200){
+                        this.props.history.push(  {pathname:"/main/account",state : { name : '登陆成功' }})
+                     } else {
+                        Toast.fail( data.responseData.statusMsg, 4);
+                     }
+                    //   console.log('登陆：',data)
+                }).catch(err=>{
+                    console.log('登陆失败')
+                })
+                // this.props.history.push(  {pathname:"/main/account",state : { name : '登陆成功' }})
             }
 
         });
@@ -136,12 +151,31 @@ class Login extends React.Component {
     // 确定注册
     handleRegedit = key => ()=>{
         console.log('handleRegedit',  this.register)
-        let param =  this.register.props.form.getFieldsValue()
-        console.log( param)
+        let reparam =  this.register.props.form.getFieldsValue()
+        console.log( reparam)
         this.register.props.form.validateFields((error, value) => {
             console.log(error, value);
             if(!error) {
-                this.closeModal('modalStatus')()
+                let param = {
+                    username:  reparam.regedit.name,
+                    useremail:  reparam.regedit.email,
+                    pwd:  reparam.regedit.pwd,
+                }
+                handApiRegister(param).then(res=>{
+                    let data = res.data
+                    if(data.statusCode === 200){
+                        // this.props.history.push(  {pathname:"/main/account",state : { name : '登陆成功' }})
+                        Toast.success("注册成功", 2);
+                        this.closeModal('modalStatus')()
+                     } else {
+                        Toast.fail( data.responseData, 4);
+                     }
+                }).catch(err=>{
+                    console.log('注册失败')
+                })
+                // this.closeModal('modalStatus')()
+
+
             }
         })
 

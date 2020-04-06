@@ -2,7 +2,7 @@
 import axios from 'axios'
 // 2. 创建axios对象，配置默认配置
 const httpRequest = axios.create({
-    baseURL: 'http://192.168.16.96/apis/', // api的base_url
+    baseURL: 'http://localhost:8299/', // api的base_url
     timeout: 15000 // 请求超时时间
 
 })

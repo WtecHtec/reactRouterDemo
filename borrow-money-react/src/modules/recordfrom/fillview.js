@@ -3,7 +3,7 @@ import Recordheader from './recordheader'
 import { DatePicker, List, Button, WhiteSpace,Checkbox } from 'antd-mobile';
 import { createForm } from 'rc-form';
 const CheckboxItem = Checkbox.CheckboxItem;
-const AgreeItem = Checkbox.AgreeItem;
+// const AgreeItem = Checkbox.AgreeItem;
 class fillview extends React.Component {
 
     constructor(props) {

@@ -16,6 +16,7 @@
     "js-md5": "^0.7.3",
     "rc-form": "^2.4.11",
     "react": "^16.13.1",
+    "react-cookies": "^0.1.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",
     "react-router": "^5.1.2",

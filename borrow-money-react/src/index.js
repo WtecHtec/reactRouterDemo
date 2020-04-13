@@ -4,8 +4,9 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import md5 from 'js-md5'
+import cookie from 'react-cookies'
 React.Component.prototype.$md5 = md5
-
+React.Component.prototype.$cookies = cookie
 ReactDOM.render(
   <React.StrictMode>
     <App />

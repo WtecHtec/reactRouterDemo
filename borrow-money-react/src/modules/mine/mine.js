@@ -1,13 +1,44 @@
 import React from 'react';
-import { NavBar ,List} from 'antd-mobile';
+import { NavBar ,List,Modal} from 'antd-mobile';
+import {  getRecordReports } from './api'
 import './mine.css'
 const Item = List.Item;
+const alert = Modal.alert;
+
+
 
 class Mine extends React.Component {
     constructor(props) {
         super(props);
-        this.state={ }
+        this.state={
+            month: 1,
+            countNumber:10
+         }
     }
+   
+    componentWillMount(){
+        this.getRecordReportData()
+    }
+
+    getRecordReportData=()=>{
+        let  month =  new Date().getMonth() + 1
+        let today  = new Date().getFullYear() + '-' + ( month > 10? month: '0'+month)
+        let param = '?createTime=' + today
+       
+        getRecordReports(param).then(res=>{
+            // console.log(res)
+            let data = res.data
+            if(data.statusCode === 200) {
+                if(data.responseData.length > 0) {
+                    this.setState({
+                        month:month,
+                        countNumber:data.responseData[0].money? data.responseData[0].money: 0
+                    })
+                }
+            }
+        })
+    }
+
     render() {
         return (
             <div style={{ height:'100%', width:'100%'}}>
@@ -19,10 +50,10 @@ class Mine extends React.Component {
                 <div className={'mineContext'}>
                     <div className={'countShow'}>
                          <div className={'countDate'}>
-                             <label className={'countDateVal'}>10</label>
+            <label className={'countDateVal'}>{ this.state.month }</label>
                              <label className={'countDateUnit'}>月</label>
                          </div>
-                         <div className={'countNumber'}>￥1000</div>
+            <div className={'countNumber'}>￥{this.state.countNumber}</div>
                     </div>
                     <div>
                         <List >
@@ -60,7 +91,7 @@ class Mine extends React.Component {
                                         background: `url(${require('../../assets/exit.png')}) center center /  21px 21px no-repeat`
                                     }}></div>
                                 }
-                                onClick={() => {}}
+                                onClick={() => { this.showAlert()}}
                                 arrow="horizontal"
                             >
                                 退出登陆
@@ -78,6 +109,16 @@ class Mine extends React.Component {
             </div>
         );
     }
+
+    showAlert = () => {
+        const alertInstance = alert('', '是否确定退出登录???', [
+          { text: '取消', onPress: () => console.log('cancel'), style: 'default' },
+          { text: '退出', onPress: () => {
+            this.props.history.push(  {pathname:"/login"})
+          } },
+        ]);
+   };
+
 }
 
 export default Mine;

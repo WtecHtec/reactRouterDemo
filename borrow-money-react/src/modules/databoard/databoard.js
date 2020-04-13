@@ -20,36 +20,51 @@ import { NavBar, Icon } from 'antd-mobile';
 //     sold: { alias: '销售量' },
 //     genre: { alias: '游戏种类' }
 // };
-
+import {  getRecordReports } from './api'
 class DataBoard extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            pieEchartData:[{
-                value: 55,
-                name: '里斯'
-            }, {
-                value: 854,
-                name: '李四'
-            }, {
-                value: 35,
-                name: '二娃'
-            }, {
-                value: 515,
-                name: '狗蛋'
-            }, {
-                value: 354,
-                name: '萨迦'
-            }, {
-                value: 154,
-                name: '漳卅'
-            }]
+            pieEchartData:[]
         }
     }
-    componentDidMount() {
-       // this.drawChart()
+
+    componentWillMount(){
+        this.getRecordReportData()
     }
+
+    componentDidMount() {
+        // this.drawChart()
+        
+     }
+
+    getRecordReportData=()=>{
+    
+       
+        getRecordReports().then(res=>{
+            // console.log(res)
+            let data = res.data
+            if(data.statusCode === 200) {
+                if(data.responseData.length > 0) {
+                  console.log('data.responseData:',data.responseData)
+                  let  echartData = []
+                  for(let i =0;  i < data.responseData.length ; i++){
+                      let item = {
+                        value:data.responseData[i].money,
+                        name: data.responseData[i].payeename
+                      }
+                    echartData.push(item)
+                  }
+                  this.setState({
+                    pieEchartData: echartData
+                  })
+                  console.log(this.state.pieEchartData)
+                }
+            }
+        })
+    }
+  
    updateDrawChartData=()=>{
 
     //    this.state.pieplateletData = [

@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom'
 import { NavBar,SearchBar,ListView ,List,ActivityIndicator} from 'antd-mobile';
 import { StickyContainer, Sticky } from 'react-sticky';
+import {  getRecordRecord } from './api'
 import './account.css'
 const Item = List.Item;
 const Brief = Item.Brief;
@@ -17,6 +18,7 @@ class Account extends React.Component {
             animating: false,//左上角加载动画
             hasMore: true,// 是否还有数据
             listTimer: null,//定时器
+            pages:0,
             pageInfo:{
                 pageSize: 10,
                 currentPage: 1
@@ -28,11 +30,32 @@ class Account extends React.Component {
             height: document.documentElement.clientHeight * 3 / 4, // 列表高度
         };
     }
+    // 获取数据
+    getRecordRecordData(){
+        let param = '?pageNum=' + this.state.pageInfo.currentPage +'&pageSize=' + this.state.pageInfo.pageSize
+        getRecordRecord(param).then(res=>{
+            console.log('getRecordRecordData',res)
+            let data  = res.data
+            if(data.statusCode ===200){
+                this.state.dataList = this.state.dataList.concat(data.responseData.list)
+                this.inItDataRow(this.state.dataList,'createtime')
+                this.state.pages = data.responseData.pages
+                this.setState({
+                    dataSource: this.state.dataSource.cloneWithRowsAndSections(this.state.rowsAndSectionsData),
+                    isLoading: false, 
+                    animating: false,
+                });
+            }else {
+                console.log('无数据')
+            }
+        })
+    }
     
     // 将接口返回的数据格式化
      inItDataRow(data,borrowDate){
         for (let i = 0; i < data.length;i++){
-            let date = data[i][borrowDate].split(' ')[0]
+            let ymdDate = data[i][borrowDate].split(' ')[0]
+            let date = ymdDate.split('-')[0] + '-' +ymdDate.split('-')[1]
             // 判断 sectionName 是否重复
             if(this.state.rowsAndSectionsData[date]){
                 this.state.rowsAndSectionsData[date].push(JSON.stringify(data[i]))
@@ -44,110 +67,125 @@ class Account extends React.Component {
      }
 
     componentDidMount() {
+        const hei = document.documentElement.clientHeight - ReactDOM.findDOMNode(this.lv).parentNode.offsetTop;
+        this.setState({
+            height:hei
+        })
+        this.state.dataList = []
+        this.getRecordRecordData()
         // you can scroll to the specified position
         // setTimeout(() => this.lv.scrollTo(0, 120), 800);
-        const hei = document.documentElement.clientHeight - ReactDOM.findDOMNode(this.lv).parentNode.offsetTop;
-        // simulate initial Ajax
-        this.state.listTimer = setTimeout(() => {
-            this.state.dataList = []
-            for(let i = 0; i < this.state.pageInfo.pageSize;i++){
-               let item =  {
-                    id:  this.state.pageInfo.currentPage + '' + i ,  // id
-                    name: '李四' + i, // 对方名字
-                    moneyNum: Number.parseInt(Math.random() *100) , // 数额
-                    repayDate: '2019-10-23', // 还钱日期
-                    borrowDate: `2019-10-${this.state.pageInfo.currentPage} 19:09:10`, // 借钱日期
-                    status: 0 // 状态
-                }
-                this.state.dataList.push(item)
-            }
-            this.inItDataRow(this.state.dataList,'borrowDate')
-            console.log('this.state.rowsAndSectionsData:',this.state.rowsAndSectionsData)
-            this.setState({
-                dataSource: this.state.dataSource.cloneWithRowsAndSections(this.state.rowsAndSectionsData),
-                isLoading: false,
-                height:hei
-            });
-            if (this.state.listTimer) {
-                clearTimeout(this.state.listTimer)
-            }
-        }, 200);
+       
+        // // simulate initial Ajax
+        // this.state.listTimer = setTimeout(() => {
+        //     this.state.dataList = []
+        //     for(let i = 0; i < this.state.pageInfo.pageSize;i++){
+        //        let item =  {
+        //             id:  this.state.pageInfo.currentPage + '' + i ,  // id
+        //             name: '李四' + i, // 对方名字
+        //             moneyNum: Number.parseInt(Math.random() *100) , // 数额
+        //             repayDate: '2019-10-23', // 还钱日期
+        //             borrowDate: `2019-10-${this.state.pageInfo.currentPage} 19:09:10`, // 借钱日期
+        //             status: 0 // 状态
+        //         }
+        //         this.state.dataList.push(item)
+        //     }
+        //     this.inItDataRow(this.state.dataList,'borrowDate')
+        //     console.log('this.state.rowsAndSectionsData:',this.state.rowsAndSectionsData)
+        //     this.setState({
+        //         dataSource: this.state.dataSource.cloneWithRowsAndSections(this.state.rowsAndSectionsData),
+        //         isLoading: false,
+        //         height:hei
+        //     });
+        //     if (this.state.listTimer) {
+        //         clearTimeout(this.state.listTimer)
+        //     }
+        // }, 200);
     }
 
     // 加载更多
     onEndReached = (event) => {
         console.log('onEndReached')
         this.state.dataList = []
-        this.state.pageInfo.currentPage +=1
-        for(let i = 0; i < this.state.pageInfo.pageSize;i++){
-            let item =  {
-                 id:  this.state.pageInfo.currentPage +''+i ,  // id
-                 name: '李四' + i, // 对方名字
-                 moneyNum: Number.parseInt(Math.random() *100) , // 数额
-                 repayDate: '2019-10-23', // 还钱日期
-                 borrowDate: `2019-10-${this.state.pageInfo.currentPage} 19:09:10`, // 借钱日期
-                 status: 0 // 状态
-             }
-             this.state.dataList.push(item)
-         }
-        // load new data
-        // hasMore: from backend data, indicates whether it is the last page, here is false
-        if (!this.state.hasMore) {
-            this.setState({
-                isLoading: false,
-            });
-            return;
-        }
-        console.log('reach end', event);
-        this.setState({ isLoading: true });
-        this.state.listTimer =  setTimeout(() => {
-            this.inItDataRow(this.state.dataList,'borrowDate')
-            this.setState({
-                dataSource: this.state.dataSource.cloneWithRowsAndSections(this.state.rowsAndSectionsData),
-                isLoading: false,
-            });
-            if (this.state.listTimer) {
-                clearTimeout(this.state.listTimer)
-            }
-            if( this.state.pageInfo.currentPage === 7) {
-                this.state.hasMore = false
-                this.state.isLoading = true
-            }
+        if(this.state.pages >  this.state.pageInfo.currentPage) {
+            this.state.pageInfo.currentPage += 1
+            this.getRecordRecordData()
+        } 
+      
+        // for(let i = 0; i < this.state.pageInfo.pageSize;i++){
+        //     let item =  {
+        //          id:  this.state.pageInfo.currentPage +''+i ,  // id
+        //          name: '李四' + i, // 对方名字
+        //          moneyNum: Number.parseInt(Math.random() *100) , // 数额
+        //          repayDate: '2019-10-23', // 还钱日期
+        //          borrowDate: `2019-10-${this.state.pageInfo.currentPage} 19:09:10`, // 借钱日期
+        //          status: 0 // 状态
+        //      }
+        //      this.state.dataList.push(item)
+        //  }
+        // // load new data
+        // // hasMore: from backend data, indicates whether it is the last page, here is false
+        // if (!this.state.hasMore) {
+        //     this.setState({
+        //         isLoading: false,
+        //     });
+        //     return;
+        // }
+        // console.log('reach end', event);
+        // this.setState({ isLoading: true });
+        // this.state.listTimer =  setTimeout(() => {
+        //     this.inItDataRow(this.state.dataList,'borrowDate')
+        //     this.setState({
+        //         dataSource: this.state.dataSource.cloneWithRowsAndSections(this.state.rowsAndSectionsData),
+        //         isLoading: false,
+        //     });
+        //     if (this.state.listTimer) {
+        //         clearTimeout(this.state.listTimer)
+        //     }
+        //     if( this.state.pageInfo.currentPage === 7) {
+        //         this.state.hasMore = false
+        //         this.state.isLoading = true
+        //     }
 
-        }, 1000);
+        // }, 1000);
     }
    
     // 刷新
     onRefresh = () => {
         console.log('onRefresh')
         this.setState({ animating: true });
+     
         this.state.rowsAndSectionsData = {}
         this.state.dataList = []
-        this.state.pageInfo.currentPage += 1
-        for(let i = 0; i < this.state.pageInfo.pageSize;i++){
-            let item =  {
-                 id:  this.state.pageInfo.currentPage +''+i ,  // id
-                 name: '李四' + i, // 对方名字
-                 moneyNum: Number.parseInt(Math.random() *100) , // 数额
-                 repayDate: '2019-10-23', // 还钱日期
-                 borrowDate: `2019-10-${this.state.pageInfo.currentPage} 19:09:10`, // 借钱日期
-                 status: 0 // 状态
-             }
-             this.state.dataList.push(item)
-         }
-        // simulate initial Ajax
-        this.state.listTimer = setTimeout(() => {
-            this.inItDataRow(this.state.dataList,'borrowDate')
-            this.setState({
-                dataSource: this.state.dataSource.cloneWithRowsAndSections(this.state.rowsAndSectionsData),
-                isLoading: false,
-            });
-          this.setState({ animating: false });
-          if (this.state.listTimer) {
-            clearTimeout(this.state.listTimer)
-        }
-        }, 600);
+        this.state.pageInfo.currentPage = 1
+        this.getRecordRecordData()
+
+        // for(let i = 0; i < this.state.pageInfo.pageSize;i++){
+        //     let item =  {
+        //          id:  this.state.pageInfo.currentPage +''+i ,  // id
+        //          name: '李四' + i, // 对方名字
+        //          moneyNum: Number.parseInt(Math.random() *100) , // 数额
+        //          repayDate: '2019-10-23', // 还钱日期
+        //          borrowDate: `2019-10-${this.state.pageInfo.currentPage} 19:09:10`, // 借钱日期
+        //          status: 0 // 状态
+        //      }
+        //      this.state.dataList.push(item)
+        //  }
+        // // simulate initial Ajax
+        // this.state.listTimer = setTimeout(() => {
+        //     this.inItDataRow(this.state.dataList,'borrowDate')
+        //     this.setState({
+        //         dataSource: this.state.dataSource.cloneWithRowsAndSections(this.state.rowsAndSectionsData),
+        //         isLoading: false,
+        //     });
+        //   this.setState({ animating: false });
+        //   if (this.state.listTimer) {
+        //     clearTimeout(this.state.listTimer)
+        // }
+        // }, 600);
+
       };
+
    handleDetailView= (itemData)=>{
        console.log(itemData)
        this.props.history.push(  {pathname:"/detailView",state : { recordData : itemData }})
@@ -177,12 +215,12 @@ class Account extends React.Component {
                 <div key={itemData['id']} style={{ padding: '0 15px' }} >
                     {/* 每条内容 - {itemData['borrowDate']} - {sectionID} - {rowID} */}
                     <List>
-                        <Item  onClick={() => { this.handleDetailView(itemData) }} extra={ <span style={{color:'red'}}> {itemData['moneyNum'] }</span> } align="top"
+                        <Item  onClick={() => { this.handleDetailView(itemData) }} extra={ <span style={{color:'red'}}> {itemData['money'] }</span> } align="top"
                               thumb="https://zos.alipayobjects.com/rmsportal/dNuvNrtqUztHCwM.png"
                               multipleLine>
-                            {itemData['name']}
+                            {itemData['payeename']}
                             <Brief>
-                                { itemData['borrowDate']}
+                                { itemData['createtime']}
                             </Brief>
                         </Item>
                     </List>

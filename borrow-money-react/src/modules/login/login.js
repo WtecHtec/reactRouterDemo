@@ -123,7 +123,7 @@ class Login extends React.Component {
             let loginParam = fieldsValue['loginParam']
             // console.log( fieldsValue['loginParam'])
             if (!error) {
-                console.log(loginParam);
+                // console.log(loginParam);
                 let param = {
                     useremail: loginParam.email,
                     pwd:   this.$md5(loginParam.pwd)
@@ -131,13 +131,15 @@ class Login extends React.Component {
                 handApiLogin(param).then((res)=>{
                      let data = res.data
                      if(data.statusCode === 200){
+                        this.$cookies.save('userId', data.responseData.userid)
+                        this.$cookies.save('token', data.responseData.token)
                         this.props.history.push(  {pathname:"/main/account",state : { name : '登陆成功' }})
                      } else {
                         Toast.fail( data.responseData.statusMsg, 4);
                      }
                     //   console.log('登陆：',data)
                 }).catch(err=>{
-                    console.log('登陆失败')
+                    console.log('登陆失败',err)
                 })
                 // this.props.history.push(  {pathname:"/main/account",state : { name : '登陆成功' }})
             }

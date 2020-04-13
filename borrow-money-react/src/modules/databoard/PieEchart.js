@@ -6,6 +6,7 @@ class PieEchart extends React.Component {
         this.state = {}
     }
     drawChart =()=>{
+        if(!this.props.data || this.props.data.length === 0) return
         // 基于准备好的dom，初始化echarts实例
         var myChart = echarts.init(document.getElementById('echart'));
         var scale = 1;
@@ -113,9 +114,10 @@ class PieEchart extends React.Component {
         myChart.setOption(option);
     }
     componentDidMount() {
-        this.drawChart()
+       
     }
     render() {
+        this.drawChart()
         return (
             <div id='echart' style={{height:`${ this.props.height }`,width:'100%'}}></div>
         )
